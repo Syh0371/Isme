@@ -1,0 +1,330 @@
+<html>
+	<head>
+		  <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title></title>
+    <script src="js/mui.min.js"></script>
+    <link href="css/mui.min.css" rel="stylesheet"/>
+    <script type="text/javascript" charset="utf-8">
+      	mui.init();
+    </script>
+    <script src="js/echarts.min.js"></script>
+     <script src="js/mui.js"></script>
+     <script src="js/jquery-1.11.0.js"></script>
+	</head>
+	<body><table>
+	<tr>
+	<td  >
+			<div id="main" style="width: 100%;height: 300px;"></div>
+			<div id="main1" style="width: 100%;height: 300px;"></div>
+	<div id="show" style="width: 100%;height:400px;">
+		<table >
+			<tr>
+				<td align="right">最高：</td><td>&nbsp&nbsp&nbsp<span id="h" style="color: red;"></span>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td><td align="right">最低：</td><td>&nbsp&nbsp&nbsp<span id="l" style="color: green;"></span></td>
+			</tr>
+			<tr>
+				<td>开盘价：</td><td>&nbsp&nbsp&nbsp<span id="o" style="color: green;"></span>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td><td align="right">昨收：</td><td>&nbsp&nbsp&nbsp<span id="lc"></span></td>
+			</tr>
+			<tr>
+				<td>成交额：</td><td>&nbsp&nbsp&nbsp<span id="s"></span>亿&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td><td>成交量：</td><td>&nbsp&nbsp&nbsp<span id="vol"></span>万手</td>
+			</tr>
+			<tr>
+				<td align="right">当前价：</td><td>&nbsp&nbsp&nbsp<span id="t"></span>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td><td align="right">比例：</td><td>&nbsp&nbsp&nbsp<span id="um"></span></td>
+			</tr>
+			<tr>
+			</tr>
+		</table>
+	</div>
+	</td>
+	<td >
+		<table id="wd">
+			
+		</table>
+	
+	</td>
+	</tr>
+	</table>
+	<script type="text/javascript">
+			 var myChart = echarts.init(document.getElementById('main'));
+		     var myChart1 = echarts.init(document.getElementById('main1'));
+	 $(function() {    
+	        //定时请求刷新  
+	         minuteMethod();
+	       setInterval(minuteMethod,1000*60);
+	  });  
+	 function minuteMethod (){
+	//mui.ajax('api.php',{
+//		data: {
+	//		request_url: 'http://120.55.166.112:8080/gold/hq.go?pid=1001&sid=10001',
+	//	},
+		$.ajax({
+	//	dataType:'json',//服务器返回json格式数据
+    //    type : 'post',
+    	url:'../goldweb/hq.go?pid=1001&sid=10001',
+        timeout: 10000,
+        async : true,            //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        success : function(result) {
+            //请求成功时执行该函数内容，result即为服务器返回的json对象id	品种编号	String	见品种说明
+            /*result={"Resp": {
+					"code": 0,
+					"data": {
+						"c": "500.22",//收盘价
+						"ls": "487.29",//昨结算
+						"h": "516.52",//最高价
+						"l": "458.05",//最低价
+						"o": "516.52",//开盘价
+						"vol": 0,//成交量
+						"s": "0.0",//结算价
+						"t": "500.22",//当前价
+						"lc": "500.16",//昨收盘
+						"name": null,//品种名称
+						"id": "Au(T+D)",//品种编号
+						"time": "2016-11-14 15:45",//行情时间
+						"tday": "2016-11-14"//行情日期
+					},
+					"desc": "成功"
+				}};*/
+            $("#lc").text(toDecimal(result.Resp.data.lc));
+            $("#t").text(toDecimal(result.Resp.data.t));
+            $("#h").text(toDecimal(result.Resp.data.h));
+            $("#l").text(toDecimal(result.Resp.data.l));
+       },
+        error : function(errorMsg) {
+            //请求失败时执行该函数
+        alert("请求数据失败!");
+        myChart.hideLoading();
+        }
+   });
+	//mui.ajax('api.php',{
+	//		data: {
+		//		request_url: 'http://120.55.166.112:8080/gold/hq.go?pid=1002&sid=10004',
+		//	},
+			$.ajax({
+				url:'../goldweb/hq.go?pid=1001&sid=10004',
+           // type : 'post',
+           // timeout: 10000,
+          // dataType:'json',//服务器返回json格式数据
+            async : true,            //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+        success : function(result) {
+            var d =[];
+            var sum = 0;
+            var t  = 0;
+            var count =0;
+            d= result.Resp.data.d;
+             for (var i = 0;  i < d.length; i++) {
+            	 sum += parseInt(d[i].vol);
+            	 t =d[d.length-1].t;
+            	 count += parseInt(d[i].vol*d[i].t);
+			}
+             $("#vol").text(toDecimal(sum));
+             $("#o").text(result.Resp.data.o);
+             var h = Number(result.Resp.data.h);
+             var l =Number(result.Resp.data.l);
+             if(t>h){
+            	 $("#h").text(toDecimal(t));
+             }
+             if(t<l){
+            	 $("#l").text(toDecimal(t));
+             }
+             $("#s").text(toDecimal(count));
+			//当前价-开盘价/开盘价
+            $("#um").text(toDecimal((t-Number(result.Resp.data.o))/Number(result.Resp.data.o))+"%");
+            var kArray  =[];
+            var aArray  =[];
+            var tArray  =[];
+            var tday = '';
+            var time ='';
+            for(var i = 0;i <d.length;i++){
+            	for (var j = 0; j < d[i].time.length; j++) {
+					if (j >= 11&&j<=15) {
+						 time +=d[i].time[j];
+						 //获取日期mm:ss
+						 if(time.length>0 && time.length%5==0){
+							 tday+=time;
+							 time='';
+					   }
+					}
+					
+				}
+            	aArray.push(Number(d[i].t));
+            	tArray.push(toDecimal(Number(d[i].t)/2));
+            	// 数据意义：开盘(open)，收盘(close)，最高(highest)，最低(lowest)
+          	  kArray[i]=[tday,result.Resp.data.o,result.Resp.data.c,h,l];
+            	tday ='';
+             //   ['2013/1/24', 2320.26,2320.26,2287.3,2362.94],
+          
+            }
+        	var data0 = splitData(kArray);
+        	function splitData(rawData) {
+        		var categoryData = [];
+				var values = [];
+				for (var i = 0; i < rawData.length; i++) {
+					categoryData.push(rawData[i].splice(0, 1)[0]);
+					values.push(rawData[i]);
+				}
+				return {
+					categoryData: categoryData,
+					values: values
+				};
+        	}
+        	option = {
+        	    tooltip: {
+        	        trigger: 'axis',
+        	        axisPointer: {
+        	            type: 'line'
+        	        }
+        	    },
+        	    grid: {
+        	        left: '10%',
+        	        right: '10%',
+        	        bottom: '15%'
+        	    },
+        	    xAxis: {
+        	        type: 'category',
+        	        data: data0.categoryData,
+        	        boundaryGap : false,
+        	        axisLine: {onZero: false},
+        	        splitNumber: 20
+        	    },
+        	    yAxis: [
+    					{
+    						scale: true,
+    						show: false
+    					},
+    					{
+    						scale: true,
+    						show: false
+    					},
+    					{
+    						scale: true,
+    						show: false
+    					}
+    					],
+        	    series: [
+						{
+							name: 'MA0',
+							type: 'line',
+							 sampling: 'average',
+							// yAxisIndex: 1,
+							data: aArray,
+							smooth: true,
+							itemStyle: {
+								normal: {
+									color: '#ff6600'
+								}
+							}
+						}
+						]
+
+        	};
+        	option1 = {
+            	    title: {
+            	        left: 0,
+            	    },
+            	    tooltip: {
+            	        trigger: 'axis',
+            	        axisPointer: {
+            	            type: 'line'
+            	        }
+            	    },
+            	    grid: {
+            	        left: '10%',
+            	        right: '10%',
+            	        bottom: '15%'
+            	    },
+            	    xAxis: {
+            	        type: 'category',
+            	        data: data0.categoryData,
+            	        boundaryGap : false,
+            	        axisLine: {onZero: false},
+            	        splitNumber: 20
+            	    },
+            	    yAxis: [
+        					{
+        						scale: true,
+        						show: false
+        					},
+        					{
+        						scale: true,
+        						show: false
+        					},
+        					{
+        						scale: true,
+        						show: false
+        					}
+        					],
+            	    series:  [{
+						name: 'MA10',
+						type: 'bar',
+						data: tArray,
+						smooth: true,
+						itemStyle: {
+							normal: {
+								color: new echarts.graphic.LinearGradient(
+									0, 0, 0, 1,
+									[
+										{offset: 0, color: '#83bff6'},
+										{offset: 0.5, color: '#188df0'},
+										{offset: 1, color: '#188df0'}
+									]
+								)
+							}
+						}
+					}
+					]
+
+            	};
+        	myChart.setOption(option);
+			myChart1.setOption(option1);
+			echarts.connect([myChart,myChart1]);
+				
+		       },
+        error : function(errorMsg) {
+            //请求失败时执行该函数
+        alert("请求数据失败!");
+        myChart.hideLoading();
+        }
+   });
+	 function toDecimal(x) { 
+	     	var f = parseFloat(x); 
+	     	   if (isNaN(f)) { 
+	     	    return false; 
+	     	   } 
+	     	   var f = Math.round(x*100)/100; 
+	     	   var s = f.toString(); 
+	     	   var rs = s.indexOf('.'); 
+	     	   if (rs < 0) { 
+	     	    rs = s.length; 
+	     	    s += '.'; 
+	     	   } 
+	     	   while (s.length <= rs + 2) { 
+	     	    s += '0'; 
+	     	   } 
+	     	   return s; 
+	     	  } 
+	 $.ajax({
+	    	url:'../goldweb/hq.go?pid=1001&sid=10002',
+	        timeout: 10000,
+	        async : true,           
+	        success : function(result) {
+	        	var data =result.Resp.data;
+	        	if(data!=null){
+	        		document.getElementById("wd").innerHTML="<tr><td>"+data.a1+"</td><td>&nbsp&nbsp&nbsp&nbsp</td><td>"+data.al1+"</td></tr>"
+	        		+"<tr><td>"+data.a2+"</td><td>&nbsp&nbsp&nbsp&nbsp</td><td>"+data.al2+"</td></tr>"
+	        		+"<tr><td>"+data.a3+"</td><td>&nbsp&nbsp&nbsp&nbsp</td><td>"+data.al3+"</td></tr>"
+	        		+"<tr><td>"+data.a4+"</td><td>&nbsp&nbsp&nbsp&nbsp</td><td>"+data.al4+"</td></tr>"
+	        		+"<tr><td>"+data.a5+"</td><td>&nbsp&nbsp&nbsp&nbsp</td><td>"+data.al5+"</td></tr>";
+	        	}
+	        	
+	       },
+	        error : function(errorMsg) {
+	            //请求失败时执行该函数
+	        alert("请求数据失败!");
+	        myChart.hideLoading();
+	        }
+	   });
+	 
+	}
+	</script>
+	</body>
+</html>
