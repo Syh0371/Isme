@@ -193,9 +193,34 @@ function switchTab(cursel,T_ymd){
 						document.getElementById('calendar').innerHTML+='<li class="rlhover"  onmouseover="setFocus(this);setTouch(this)" onclick="set_clickTime(this)" onmouseout="setFocusOut(this);setTouch(this)" ><p>'+set_Day[j]+'</p><span>'+set_week[j]+'</span><span class="hM">'+set_Mm[j]+'</span><span class="hM">'+set_Yy[j]+'</span></li>';
 					}
 				}	
+				//判断客户端
+//				var sUserAgent = navigator.userAgent.toLowerCase();
+//			    var bIsIpad = sUserAgent.match(/ipad/i) == "ipad";
+//			    var bIsIphoneOs = sUserAgent.match(/iphone os/i) == "iphone os";
+//			    var bIsMidp = sUserAgent.match(/midp/i) == "midp";
+//			    var bIsUc = sUserAgent.match(/ucweb/i) == "ucweb";
+//			    var bIsAndroid = sUserAgent.match(/android/i) == "android";
+//			    var bIsCE = sUserAgent.match(/windows ce/i) == "windows ce";
+//			    var bIsWM = sUserAgent.match(/windows mobile/i) == "windows mobile";
+//			    
+//			//	alert("屏幕分辨率"+screen.width + "*" + screen.height );
+//			//	alert("屏幕可显示面积："+screen.availWidth + "*" + screen.availHeight);
+//			    
+//			    if (!(bIsIpad || bIsIphoneOs || bIsMidp || bIsUc || bIsAndroid || bIsCE || bIsWM) ){
+//			        //window.location.href=B页面;
+//			    }
+			     // 7    13
+				var Iswith =  screen.width;
 				var _hidden =document.getElementById('calendar').children;
-				for(var i =0;i<3;i++){
-					_hidden[i].style.display="none";
+					if(Iswith>650){
+						for(var i =0;i<3;i++){
+							_hidden[i].style.display="none";
+						}
+					}else{
+						for(var i =0;i<6;i++){
+							_hidden[i].style.display="none";
+						}
+					
 				}
 				
 		}
@@ -257,19 +282,27 @@ function set_clickTime(obj){
 	        }
 	    }  
 	}  
-	
-	
-	
-	
 		var click_Num = 3;
+		var Isw =  screen.width;
 	function click_Btleft(){
 		var va =document.getElementById('calendar').children;
-		if(click_Num<6){
-			click_Num++;
-		va[0].style.display="none";
-		for(var i =0;i<click_Num;i++){
-			va[i].style.display="none";
-		}
+		if(Isw>650){
+			if(click_Num<6){
+				click_Num++;
+				va[0].style.display="none";
+				for(var i =0;i<click_Num;i++){
+					va[i].style.display="none";
+				}
+			}
+		}else{
+			click_Num=6;
+			if(click_Num<11){
+				click_Num++;
+				va[0].style.display="none";
+				for(var i =0;i<click_Num;i++){
+					va[i].style.display="none";
+				}
+			}
 		}
 	}
 	function click_Btright(){
