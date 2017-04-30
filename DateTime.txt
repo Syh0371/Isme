@@ -1,0 +1,137 @@
+/**
+     * 本周或上周的第一天或最后一天
+     * @param x 1上周第一天 2上周最后一天 3本周第一天 4本周最后一天
+     * @return
+     */
+    private String getWeekDateTime(int x){
+        String dateTime = "";
+        Calendar cal = Calendar.getInstance();
+        int date = cal.get(Calendar.DAY_OF_MONTH);
+        int n = cal.get(Calendar.DAY_OF_WEEK);
+
+        if (n == 1) {
+            n = 7;
+        } else {
+            n = n - 1;
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        if(x == 1) {
+            cal.set(Calendar.DAY_OF_MONTH, date - 6 - n);
+            dateTime = sdf.format(cal.getTime());
+        }
+        if(x == 2) {
+            cal.set(Calendar.DAY_OF_MONTH, date - n);
+            dateTime = sdf.format(cal.getTime());
+        }
+
+        if(x == 3) {
+            cal.set(Calendar.DAY_OF_MONTH, date + 1 - n);
+            dateTime = sdf.format(cal.getTime());
+        }
+        if(x == 4) {
+            cal.set(Calendar.DAY_OF_MONTH, date + 7 - n);
+            dateTime = sdf.format(cal.getTime());
+        }
+
+        return dateTime;
+    }
+
+
+
+---------------------------------
+/**
+     * 获取当月第一天或最后一天日期
+     * @param x 1为第一天 2为最后一天
+     * @return
+     */
+    private String getNowMonth(int x){
+        String dateTime = "";
+        if (x == 1){
+            dateTime = getMonthStart();
+        }else{
+            dateTime = getMonthEnd();
+        }
+
+        return dateTime;
+    }
+
+    private String  getMonthStart() {
+        Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        int index = calendar.get(Calendar.DAY_OF_MONTH);
+        calendar.add(Calendar.DATE, (1 - index));
+
+        return sdf.format(calendar.getTime());
+    }
+
+
+    private String getMonthEnd() {
+        Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.MONTH, 1);
+        int index = calendar.get(Calendar.DAY_OF_MONTH);
+        calendar.add(Calendar.DATE, (-index));
+
+        return sdf.format(calendar.getTime());
+    }
+
+
+
+
+-------------------------------------------
+/**
+     * 获取上个月的第一天和最后一天
+     * @param x 1为第一天，2为最后一天
+     * @return
+     */
+    public String getUpMonth(int x) {
+        String monthStr = "";
+        Date nowdate = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar cal = Calendar.getInstance();
+        /* 设置为当前时间 */
+        cal.setTime(nowdate);
+//        System.out.println("当前时间是：" + sdf.format(nowdate));
+        /* 当前日期月份-1 */
+        cal.add(Calendar.MONTH, -1);
+        if (x == 1) {
+            // 得到前一个月的第一天
+            cal.set(Calendar.DAY_OF_MONTH, cal.getActualMinimum(Calendar.DAY_OF_MONTH));
+            System.out.println("上个月的第一天是：" + sdf.format(cal.getTime()));
+            monthStr = sdf.format(cal.getTime());
+        }else{
+            // 得到前一个月的最后一天
+            cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+            System.out.println("上个月的最后一天是：" + sdf.format(cal.getTime()));
+            monthStr = sdf.format(cal.getTime());
+        }
+
+        return monthStr;
+    }
+
+
+---------------------------------------------
+/**
+     * 获取当前时间日期或前一天日期
+     * @param x 1当前日期 2前一天日期
+     * @return
+     */
+    public String getNowOrNextDay(int x) {
+        String dateTime = "";
+        Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        if (x == 1){
+
+        }else {
+            calendar.add(Calendar.DAY_OF_MONTH, -1);
+            dateTime = sdf.format(calendar.getTime());
+        }
+
+        return dateTime;
+    }
