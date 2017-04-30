@@ -37,3 +37,27 @@ function getFirst(elem){
 
 3:
 children 可以向子元素追加css样式     和childNodes 则不能
+----------------------------------------------------------------
+2017-04-30
+<script>
+    $(document).ready(function() {
+        var audioElementHovertree = document.createElement('audio');
+        audioElementHovertree.setAttribute('src', 'http://down.hovertree.com/hovertreesound/hovertreesnow.mp3');
+        audioElementHovertree.setAttribute('autoplay', 'autoplay'); //打开自动播放
+        //audioElement.load()
+ 
+        $.get();
+ 
+        audioElementHovertree.addEventListener("load", function() {
+            audioElementHovertree.play();
+        }, true);
+ 
+        $('.playHover'+'tree').click(function() {
+            audioElementHovertree.play();
+        });
+ 
+        $('.pauseH'+'overtree').click(function() {
+            audioElementHovertree.pause();
+        });
+    });</script>
+--------------------------------------------------------------
