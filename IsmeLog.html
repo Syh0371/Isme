@@ -83,3 +83,15 @@ web.xml 配置404和500错误的自定义页面
 17    
 18</web-app>
 19
+-----------------------------------------------------------------------------
+文件下载 弹窗提示 结束关闭
+        var myWindow;
+        var url="/data/outPutExcel?brandId="+brand_id+"&&storeId="+store_id+"&&time="+time_no+"&&startTime="+startDate+"&&endTime="+endData;
+       // var openId= window.open(url, '_self').close();
+       //  window.open(url,'javascript:document.write("小T正在为您努力下载，报表生成完成后会自动关闭，请稍等...."); document.title="Together提示您";document.close()', null, 'height=100,width=500,top=0,left=0,toolbar=no,menubar=no,scrollbars=no, resizable=no,location=no, status=no');
+        myWindow =window.open(url,'top=0,left=0,toolbar=no,menubar=no,scrollbars=no, resizable=no,location=no, status=no');
+        myWindow.document.write("小T正在为您努力下载，报表生成完成后会自动关闭，请稍等....");
+        myWindow.document.title="Together提示您";
+        myWindow.location.href=url;
+        myWindow.document.close();
+       // var closeId = window.open('javascript:document.write("小T正在为您努力下载，报表生成完成后会自动关闭，请稍等...."); document.title="Together提示您";document.close()', null, 'height=100,width=500,top=0,left=0,toolbar=no,menubar=no,scrollbars=no, resizable=no,location=no, status=no');
