@@ -99,3 +99,40 @@ web.xml 配置404和500错误的自定义页面
 java 手机号码加密 138****1967
 order.getUser().getMobile().replaceAll("(\\d{3})\\d{4}(\\d{4})", "$1****$2")
 -----------------------------------------------------------------------------
+
+   private byte[] getBytes(String filePath){
+        byte[] buffer = null;
+        try {
+            File file = new File(filePath);
+            FileInputStream fis = new FileInputStream(file);
+            ByteArrayOutputStream bos = new ByteArrayOutputStream(1000);
+            byte[] b = new byte[1000];
+            int n;
+            while ((n = fis.read(b)) != -1) {
+                bos.write(b, 0, n);
+            }
+            fis.close();
+            bos.close();
+            buffer = bos.toByteArray();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return buffer;
+    }
+    private byte[] toByteArray (Object obj) {
+        byte[] bytes = null;
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        try {
+            ObjectOutputStream oos = new ObjectOutputStream(bos);
+            oos.writeObject(obj);
+            oos.flush();
+            bytes = bos.toByteArray ();
+            oos.close();
+            bos.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return bytes;
+    }
