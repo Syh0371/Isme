@@ -139,3 +139,16 @@ order.getUser().getMobile().replaceAll("(\\d{3})\\d{4}(\\d{4})", "$1****$2")
 --------------------------------------------------------------------------
 java htto 文件文件上传
 http://blog.csdn.net/nupt123456789/article/details/42721003/
+--------------------------------------------------------------------------
+文件上传获取文件地址
+创建临时文件
+  String ext = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+        String filepath = "";
+        File tempFile = null;
+        // 在默认文件夹下创建临时文件
+        tempFile = File.createTempFile("data", System.currentTimeMillis()+ file.getOriginalFilename());
+         //获取临时文件位置
+        filepath = tempFile.getCanonicalPath();
+        TogHttpParamBuilder builder = new TogHttpParamBuilder().add("filepath", filepath).add("ext",ext);
+        FileUtils.copyInputStreamToFile(file.getInputStream(), new File(filepath));
+------------------------------------------------------------------------------------------
