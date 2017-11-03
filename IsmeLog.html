@@ -159,7 +159,18 @@ IDEA mybatis 提示插件
 3.Lombok plugin (java 注解)
 
 ------------------------------------------------------------------------------------------
-
-
-
+ //捕捉页面回退事件  并刷新回退的页面
+function returnBack() {
+    var counter = 0;
+    if (window.history && window.history.pushState) {
+        $(window).on('popstate', function () {
+            window.history.pushState('forward', null, '#');
+            window.history.forward(1);
+            //回退 并刷新页面
+            location.href = document.referrer;
+        });
+    }
+    window.history.pushState('forward', null, '#'); //在IE中必须得有这两行
+    window.history.forward(1);
+}
 
