@@ -17,7 +17,7 @@ public class SortUtil<E> {
      *
      * @param list
      * @param method
-     * @param reverseFlag
+     * @param reverseFlag   true 降序 / false  升序
      */
     public void sortByMethod(List<E> list, final String method,
                              final boolean reverseFlag) {
